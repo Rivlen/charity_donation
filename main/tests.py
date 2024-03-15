@@ -18,4 +18,4 @@ def test_landing_page_dynamic_stats(client, donation):
     assertTemplateUsed(response, 'index.html')
 
     assert response.context['donation_sum'] == 5
-    assert response.context['unique_institutions_amount'] == 1
+    assert response.context['unique_institutions_count'] == 1
