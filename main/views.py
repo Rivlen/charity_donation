@@ -16,9 +16,9 @@ class LandingPageView(TemplateView):
         institution_by_type = []
         for i in range(1, 4):
             institution_by_type.append(list(institutions.filter(type=i)))
-        unique_institutions_count = len(institutions)
+        institutions_count = len(institutions)
 
-        return {'donation_sum': donation_sum, 'unique_institutions_count': unique_institutions_count,
+        return {'donation_sum': donation_sum, 'institutions_count': institutions_count,
                 'institution_by_type': institution_by_type}
 
 
