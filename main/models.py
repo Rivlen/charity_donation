@@ -1,5 +1,5 @@
 from django.db import models
-from userbase.models import User
+from userbase.models import CustomUser
 
 
 class Category(models.Model):
@@ -33,4 +33,4 @@ class Donation(models.Model):
     pick_up_date = models.DateField()
     pick_up_time = models.TimeField()
     pick_up_comment = models.TextField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=None, null=True)

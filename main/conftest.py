@@ -1,6 +1,6 @@
 import pytest
 from main.models import Category, Institution, Address, Donation
-from userbase.models import User
+from userbase.models import CustomUser
 import datetime
 
 
@@ -30,8 +30,8 @@ def address():
 
 @pytest.fixture
 def user():
-    user = User.objects.create_user(username='testuser',
-                                    password='password123')
+    user = CustomUser.objects.create_user(username='testuser',
+                                          password='password123')
     return user
 
 
