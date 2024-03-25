@@ -1,3 +1,5 @@
+from main.models import Institution
 from django.contrib import admin
 
-# Register your models here.
+
+admin.site.register(Institution)
