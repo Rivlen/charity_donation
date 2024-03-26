@@ -1,15 +1,15 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 
 from userbase.forms import UserForm
-from userbase.models import CustomUser
 
 
-class MemberRegisterView(View):
+class UserRegisterView(View):
     def get(self, request):
-        return render(request, "register.html")
+        return render(request, 'register.html')
 
     def post(self, request):
         new_user = UserForm(request.POST)
@@ -20,12 +20,12 @@ class MemberRegisterView(View):
             user.save()
 
             return redirect(reverse('login'))
-        return render(request, "register.html")
+        return render(request, 'register.html')
 
 
-class MemberLoginView(View):
+class UserLoginView(View):
     def get(self, request):
-        return render(request, "login.html")
+        return render(request, 'login.html')
 
     def post(self, request):
         email = request.POST["email"]
@@ -38,7 +38,14 @@ class MemberLoginView(View):
             return redirect(reverse('register'))
 
 
-class MemberLogoutView(View):
+class UserLogoutView(View):
     def get(self, request):
         request.session.clear()
         return redirect(reverse('landing-page'))
+
+
+class UserDetailsView(LoginRequiredMixin, View):
+    login_url = 'login'
+
+    def get(self, request):
+        return render(request, 'user-details.html')

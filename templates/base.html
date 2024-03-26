@@ -24,7 +24,7 @@
                 <li class="logged-user">
                     Witaj {{ username }}
                     <ul class="dropdown">
-                        <li><a href="#">Profil</a></li>
+                        <li><a href="{% url 'user-details' %}">Profil</a></li>
                         <li><a href="#">Ustawienia</a></li>
                         <li><a href="{% url 'logout' %}">Wyloguj</a></li>
                         {% if is_superuser %}

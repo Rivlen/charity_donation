@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+
+
+{% block header_class %}
+{% endblock %}
+
+{% block section %}
+    <div class="steps--container--vertical top--bottom--padding">
+        <h2>Dane użytkownika</h2>
+        <div class="steps--item">
+            <h3>{{ user.first_name }}</h3>
+            <p>Imię</p>
+        </div>
+        <div class="steps--item">
+            <h3>{{ user.last_name }}</h3>
+            <p>Nazwisko</p>
+        </div>
+        <div class="steps--item">
+            <h3>{{ user.email }}</h3>
+            <p>Email</p>
+        </div>
+    </div>
+{% endblock %}
