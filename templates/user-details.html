@@ -6,19 +6,51 @@
 {% endblock %}
 
 {% block section %}
-    <div class="steps--container--vertical top--bottom--padding">
-        <h2>Dane użytkownika</h2>
-        <div class="steps--item">
-            <h3>{{ user.first_name }}</h3>
-            <p>Imię</p>
+    <div class="container2">
+        <div class="steps--container--vertical top--bottom--padding">
+            <h2>Dane użytkownika</h2>
+            <div class="steps--item">
+                <h3>{{ user.first_name }}</h3>
+                <p>Imię</p>
+            </div>
+            <div class="steps--item">
+                <h3>{{ user.last_name }}</h3>
+                <p>Nazwisko</p>
+            </div>
+            <div class="steps--item">
+                <h3>{{ user.email }}</h3>
+                <p>Email</p>
+            </div>
         </div>
-        <div class="steps--item">
-            <h3>{{ user.last_name }}</h3>
-            <p>Nazwisko</p>
-        </div>
-        <div class="steps--item">
-            <h3>{{ user.email }}</h3>
-            <p>Email</p>
-        </div>
+
+        {% for donation in donations %}
+            <table>
+                <tr class="donation-header">
+                    <td colspan="2">Dotacja</td>
+                </tr>
+                <tr>
+                    <th>Liczba worków</th>
+                    <th>{{ donation.quantity }}</th>
+                </tr>
+                <tr>
+                    <th>Instytucja</th>
+                    <th>{{ donation.institution.name }}</th>
+                </tr>
+                <tr>
+                    <th>Kategorie</th>
+
+                    <th>
+                        {% for category in donation.category.all %}
+                            {{ category.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </th>
+
+                </tr>
+                <tr>
+                    <th>Data i czas odbioru</th>
+                    <th>{{ donation.date }} {{ donation.time }}</th>
+                </tr>
+            </table>
+        {% endfor %}
     </div>
 {% endblock %}

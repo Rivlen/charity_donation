@@ -3,7 +3,9 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
+from django.views.generic import ListView
 
+from main.models import Donation
 from userbase.forms import UserForm
 
 
@@ -44,8 +46,11 @@ class UserLogoutView(View):
         return redirect(reverse('landing-page'))
 
 
-class UserDetailsView(LoginRequiredMixin, View):
+class UserDetailsView(LoginRequiredMixin, ListView):
+    model = Donation
     login_url = 'login'
+    template_name = 'user-details.html'
+    context_object_name = 'donations'
 
-    def get(self, request):
-        return render(request, 'user-details.html')
+    def get_queryset(self):
+        return Donation.objects.filter(user=self.request.user)
