@@ -1,8 +1,9 @@
+from django.db.models import Count
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import TemplateView
 from main.models import Category, Institution, Address, Donation
-from django.core import serializers
 
 
 class LandingPageView(TemplateView):
@@ -30,14 +31,42 @@ class DonationPageView(View):
             return redirect('login')
 
         categories = Category.objects.all()
-        institutions = Institution.objects.all()
 
-        serialized_categories = serializers.serialize('json', categories)
-        serialized_institutions = serializers.serialize('json', institutions)
-
-        context = {'categories': categories, 'institutions': institutions,
-                   'serialized_categories': serialized_categories, 'serialized_institutions': serialized_institutions}
+        context = {'categories': categories}
         return render(request, 'form.html', context)
+
+
+
+class GetInstitutionsByCategoriesAPI(View):
+    def get(self, request):
+        # Get the list of category IDs from the request, removing any slashes
+        ids = request.GET.getlist('type_ids')
+        ids = [temp_id.replace('/', '') for temp_id in ids]  # Remove any slashes from the ids
+
+        try:
+            # Now safely convert to integers
+            ids = [int(temp_id) for temp_id in ids]
+        except ValueError as e:
+            # Handle the case where conversion to integer fails
+            return JsonResponse({'error': str(e)}, status=400)
+
+        # The number of categories we're filtering against
+        num_categories = len(ids)
+
+        # Filter institutions by those categories and annotate the count of distinct categories
+        institutions = Institution.objects \
+            .filter(category__id__in=ids) \
+            .annotate(num_categories=Count('category', distinct=True)) \
+            .filter(num_categories=num_categories)
+
+        # Serialize the institution data
+        institutions_data = [{'id': institution.id, 'name': institution.name, 'description': institution.description}
+                             for institution in institutions]
+
+        return JsonResponse(institutions_data, safe=False)
+
+
+class DonationConfirmationView(View):
 
     def post(self, request):
         if not request.user.is_authenticated:
@@ -64,8 +93,4 @@ class DonationPageView(View):
 
         categories = Category.objects.filter(id__in=categories_ids)
         donation.category.add(*categories)
-        return redirect('donation-success')
-
-
-class DonationConfirmationView(TemplateView):
-    template_name = 'form-confirmation.html'
+        return render(request, 'form-confirmation.html')
