@@ -81,7 +81,7 @@ function getInstitutions() { //[1,2,3]
 
                 const input = document.createElement('input');
                 input.type = 'radio';
-                input.name = 'organization';
+                input.name = 'institution';
                 input.value = institution.id; // Assuming each institution has an 'id' property
                 input.setAttribute('data-institution-name', institution.name); // Setting data-institution-name attribute
 
@@ -139,8 +139,6 @@ document.getElementById('nextStepBtn3').addEventListener('click', function () {
         };
 
         window.localStorage.setItem('selectedInstitution', JSON.stringify(selectedInstitution));
-
-        console.log("Selected institution stored:", JSON.stringify(selectedInstitution));
     } else {
         // Handle the case where no institution is selected (if necessary)
         console.log("No institution selected.");
@@ -254,3 +252,10 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("category-choice").innerHTML = "{{serialized_categories}}";
 });
 
+document.getElementById('myForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevent default form submission behavior
+
+    const formData = new FormData(this);
+    console.log("formData: ", formData);
+    this.submit();
+});

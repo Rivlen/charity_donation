@@ -35,6 +35,32 @@ class DonationPageView(View):
         context = {'categories': categories}
         return render(request, 'form.html', context)
 
+    def post(self, request):
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        categories_ids = request.POST.getlist('categories')
+        quantity = request.POST.get('bags')
+        institution_id = request.POST.get('institution')
+        street_address = request.POST.get('address')
+        city = request.POST.get('city')
+        postal_code = request.POST.get('postcode')
+        phone_number = request.POST.get('phone')
+        date = request.POST.get('date')
+        time = request.POST.get('time')
+        pick_up_comment = request.POST.get('more_info')
+
+        institution = Institution.objects.get(id=institution_id)
+        address_obj = Address(street_address=street_address, city=city, postal_code=postal_code)
+        address_obj.save()
+
+        donation = Donation(quantity=quantity, institution=institution, address=address_obj, phone_number=phone_number,
+                            pick_up_date=date, pick_up_time=time, pick_up_comment=pick_up_comment, user=request.user)
+        donation.save()
+
+        categories = Category.objects.filter(id__in=categories_ids)
+        donation.category.add(*categories)
+        return render(request, 'form-confirmation.html')
 
 
 class GetInstitutionsByCategoriesAPI(View):
@@ -64,33 +90,3 @@ class GetInstitutionsByCategoriesAPI(View):
                              for institution in institutions]
 
         return JsonResponse(institutions_data, safe=False)
-
-
-class DonationConfirmationView(View):
-
-    def post(self, request):
-        if not request.user.is_authenticated:
-            return redirect('login')
-
-        categories_ids = request.POST.getlist('categories')
-        quantity = request.POST.get('bags')
-        institution_id = request.POST.get('institution')
-        street_address = request.POST.get('address')
-        city = request.POST.get('city')
-        postal_code = request.POST.get('postcode')
-        phone_number = request.POST.get('phone')
-        date = request.POST.get('date')
-        time = request.POST.get('time')
-        pick_up_comment = request.POST.get('more_info')
-
-        institution = Institution.objects.get(id=institution_id)
-        address_obj = Address(street_address=street_address, city=city, postal_code=postal_code)
-        address_obj.save()
-
-        donation = Donation(quantity=quantity, institution=institution, address=address_obj, phone_number=phone_number,
-                            pick_up_date=date, pick_up_time=time, pick_up_comment=pick_up_comment, user=request.user)
-        donation.save()
-
-        categories = Category.objects.filter(id__in=categories_ids)
-        donation.category.add(*categories)
-        return render(request, 'form-confirmation.html')
